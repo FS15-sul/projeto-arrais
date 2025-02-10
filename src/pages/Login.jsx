@@ -1,13 +1,17 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { Input } from "antd";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
+import { LoginContext } from "../contexts/LoginContext";
+import { useNavigate } from "react-router";
 
 
 const Login = () => {
 
     const usuarioValue = useRef();
     const senhaValue = useRef();
+    const { setUsuario } = useContext(LoginContext);
+    const navigate = useNavigate();
 
     async function login(){
         const usuario = usuarioValue.current.input.value;
@@ -28,7 +32,13 @@ const Login = () => {
             },
             body: JSON.stringify({ usuario, senha})
         });
-        const response = await request.json();        
+        const response = await request.json();    
+        
+        if(response){
+            setUsuario(response);
+            sessionStorage.setItem("usuario", JSON.stringify(response))
+            navigate('/');
+        }
     }
 
     return (
